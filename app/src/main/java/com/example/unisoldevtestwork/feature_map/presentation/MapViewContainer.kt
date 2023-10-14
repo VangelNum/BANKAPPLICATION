@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableDoubleState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -28,7 +29,7 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
-import com.yandex.mapkit.map.PlacemarkMapObject
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
@@ -54,7 +55,7 @@ fun MapViewContainer(
 
     val context = LocalContext.current
     userLocationPoint(context, mapView)
-    addOfficeMarkers(mapView, offices.value, context)
+    addOfficeMarkers(mapView, offices.value, context, latitudeUser, longitudeUser)
     AndroidView(
         modifier = modifier,
         factory = { mapView }
@@ -65,8 +66,8 @@ fun MapViewContainer(
                 onSearchOffices(55.727469, 37.614716, 12.0)
                 mapView.map.move(
                     CameraPosition(
-                        //Point(location.latitude, location.longitude),
-                        Point(56.727469, 37.614716),
+                        Point(location.latitude, location.longitude),
+                        //Point(56.727469, 37.614716),
                         17.0f,
                         150.0f,
                         30.0f
@@ -77,18 +78,8 @@ fun MapViewContainer(
                 longitudeUser = location.longitude
             }
         }
-        mapView.map.mapObjects.addTapListener { mapObject, _ ->
-            Log.d("tag",mapObject.toString())
-            if (mapObject is PlacemarkMapObject) {
-                calculateAndDisplayRoute(
-                    mapView,
-                    Point(latitudeUser, longitudeUser),
-                    mapObject.geometry,
-                )
-            }
-            true
-        }
     }
+
 }
 
 
@@ -97,7 +88,7 @@ private fun calculateAndDisplayRoute(
     startPoint: Point,
     endPoint: Point
 ) {
-    Log.d("tag","fdfbdfjdnfjzjjjj")
+    Log.d("tag", "fdfbdfjdnfjzjjjj")
     val directions = DirectionsFactory.getInstance()
     val session = directions.createDrivingRouter()
 
@@ -166,6 +157,8 @@ private fun addOfficeMarkers(
     mapView: MapView,
     offices: List<OfficesItem>,
     context: Context,
+    latitudeUser: Double,
+    longitudeUser: Double,
 ) {
     for (office in offices) {
         val officePoint = Point(office.latitude, office.longitude)
@@ -177,6 +170,12 @@ private fun addOfficeMarkers(
             ), IconStyle().setScale(0.1f)
         )
         officeMarker.addTapListener { _, _ ->
+
+            calculateAndDisplayRoute(
+                mapView,
+                Point(latitudeUser, longitudeUser),
+                officeMarker.geometry,
+            )
             true
         }
     }
@@ -190,10 +189,10 @@ private fun buildRouteToOffice(
     endLatitude: Double,
     endLongitude: Double
 ) {
-    Log.d("tag","start $startLatitude")
-    Log.d("tag","start $startLongitude")
-    Log.d("tag","end $endLatitude")
-    Log.d("tag","end $endLongitude")
+    Log.d("tag", "start $startLatitude")
+    Log.d("tag", "start $startLongitude")
+    Log.d("tag", "end $endLatitude")
+    Log.d("tag", "end $endLongitude")
 }
 
 private fun buildRoute(
