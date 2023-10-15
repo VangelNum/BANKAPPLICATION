@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UnisoldevTestWork</string>
+    <string name="app_name">BankFinderApp</string>
     <string name="WHEELCHAIR">Инвалидная коляска</string>
     <string name="BLIND">Услуги слабовидящим</string>
     <string name="NFC_FOR_BANK_CARDS">NFC</string>
