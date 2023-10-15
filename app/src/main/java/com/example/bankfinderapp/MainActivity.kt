@@ -49,6 +49,7 @@ import com.example.bankfinderapp.feature_map.presentation.ErrorPermissionLocatio
 import com.example.bankfinderapp.feature_map.presentation.MapViewContainer
 import com.example.bankfinderapp.feature_map.presentation.addAtmsMarkers
 import com.example.bankfinderapp.feature_map.presentation.addOfficeMarkers
+import com.example.bankfinderapp.feature_map.presentation.clearRoute
 import com.example.bankfinderapp.feature_office.data.model.OfficesItem
 import com.example.bankfinderapp.feature_office.presentation.BottomSheetAboutOffices
 import com.example.bankfinderapp.feature_office.presentation.OfficesViewModel
@@ -149,7 +150,10 @@ class MainActivity : ComponentActivity() {
                                             isATMChipSelected = false
                                         },
                                         label = {
-                                            Text("Офисы", color = if (isOfficeChipSelected) Color.Blue else Color.Black)
+                                            Text(
+                                                "Офисы",
+                                                color = if (isOfficeChipSelected) Color.Blue else Color.Black
+                                            )
                                         }
                                     )
 
@@ -169,20 +173,39 @@ class MainActivity : ComponentActivity() {
                                             isATMChipSelected = true
                                         },
                                         label = {
-                                            Text("Банкоматы", color = if (isATMChipSelected) Color.Blue else Color.Black)
+                                            Text(
+                                                "Банкоматы",
+                                                color = if (isATMChipSelected) Color.Blue else Color.Black
+                                            )
                                         }
                                     )
                                 }
                             }
 
                             if (!showBottomSheetForOffices.value && !showBottomSheetForATM.value && isATMChipSelected) {
-                                BottomSheetServicesForATM()
+                                BottomSheetServicesForATM(
+                                    atmViewModel,
+                                    latitudeUser,
+                                    longitudeUser,
+                                    10000.0,
+                                    onAddedFilter = {
+                                        mapView.map.mapObjects.clear()
+                                        addAtmsMarkers(
+                                            mapView,
+                                            atms.value,
+                                            context,
+                                            showBottomSheetForATM,
+                                            selectedATM
+                                        )
+                                    }
+                                )
                             } else {
-                                if (selectedOffice.value != null && showBottomSheetForOffices.value) {
+                                if (selectedOffice.value != null && showBottomSheetForOffices.value && isOfficeChipSelected) {
                                     Column {
                                         Box(
                                             modifier = Modifier
                                                 .padding(16.dp)
+                                                .padding(top = 40.dp)
                                                 .size(50.dp)
                                                 .background(
                                                     MaterialTheme.colorScheme.primary,
@@ -192,6 +215,7 @@ class MainActivity : ComponentActivity() {
                                         ) {
                                             IconButton(modifier = Modifier.size(35.dp),
                                                 onClick = {
+                                                    clearRoute(mapView)
                                                     showBottomSheetForOffices.value = false
                                                 }
                                             ) {
@@ -212,11 +236,12 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
-                                if (selectedATM.value != null && showBottomSheetForATM.value) {
+                                if (selectedATM.value != null && showBottomSheetForATM.value && isATMChipSelected) {
                                     Column {
                                         Box(
                                             modifier = Modifier
                                                 .padding(16.dp)
+                                                .padding(top = 40.dp)
                                                 .size(50.dp)
                                                 .background(
                                                     MaterialTheme.colorScheme.primary,
@@ -227,6 +252,7 @@ class MainActivity : ComponentActivity() {
                                             IconButton(modifier = Modifier.size(35.dp),
                                                 onClick = {
                                                     showBottomSheetForATM.value = false
+                                                    clearRoute(mapView)
                                                 }
                                             ) {
                                                 Icon(
@@ -239,7 +265,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                         BottomSheetAboutATM(
                                             selectedATM = selectedATM,
-                                            showBottomSheet = showBottomSheetForOffices,
+                                            showBottomSheet = showBottomSheetForATM,
                                             mapView = mapView,
                                             latitudeUser = latitudeUser,
                                             longitudeUser = longitudeUser

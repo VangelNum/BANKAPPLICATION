@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bankfinderapp.feature_atm.data.model.ATMModelItem
 import com.example.bankfinderapp.feature_map.presentation.displayRoute
+import com.example.bankfinderapp.feature_office.presentation.BackPressHandler
 import com.example.unisoldevtestwork.R
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.mapview.MapView
@@ -47,6 +48,9 @@ fun BottomSheetAboutATM(
     longitudeUser: MutableDoubleState
 ) {
     val scope = rememberCoroutineScope()
+
+    val onBack = { showBottomSheet.value = false }
+    BackPressHandler(onBackPressed = onBack)
 
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = SheetState(
@@ -73,9 +77,6 @@ fun BottomSheetAboutATM(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    val fontFamily = FontFamily(
-                        Font(R.font.ubuntylight)
-                    )
                     Text(
                         text = "Отделение",
                         style = MaterialTheme.typography.titleLarge,
@@ -98,16 +99,14 @@ fun BottomSheetAboutATM(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        Text("Wheelchair ${selectedATM.value!!.features.wheelchair}")
-                        Text("Blind ${selectedATM.value!!.features.wheelchair}")
-                        Text("NFC for Bank Cards ${selectedATM.value!!.features.wheelchair}")
-                        Text("QR Read ${selectedATM.value!!.features.wheelchair}")
-                        Text("Supports USD ${selectedATM.value!!.features.wheelchair}")
-                        Text("Supports Charge in Rubles ${selectedATM.value!!.features.wheelchair}")
-                        Text("Supports EUR ${selectedATM.value!!.features.wheelchair}")
-                        Text("Supports Charge in Rubles ${selectedATM.value!!.features.wheelchair}")
-                        Text("Supports Rubles ${selectedATM.value!!.features.wheelchair}")
-
+                        Text("Инвалидная коляска ${selectedATM.value!!.features.wheelchair.serviceCapability}")
+                        Text("Услуги слабовидящим ${selectedATM.value!!.features.blind.serviceCapability}")
+                        Text("NFC ${selectedATM.value!!.features.nfcForBankCards.serviceCapability}")
+                        Text("QR-код ${selectedATM.value!!.features.qrRead.serviceCapability}")
+                        Text("Пополнение  USD${selectedATM.value!!.features.supportsUsd.serviceCapability}")
+                        Text("Обмен RUB ${selectedATM.value!!.features.supportsChargeRub.serviceCapability}")
+                        Text("Поддержка евро ${selectedATM.value!!.features.supportsEur.serviceCapability}")
+                        Text("Поддержка оплаты в рублях ${selectedATM.value!!.features.supportsRub.serviceCapability}")
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     val fontBigFamily = FontFamily(

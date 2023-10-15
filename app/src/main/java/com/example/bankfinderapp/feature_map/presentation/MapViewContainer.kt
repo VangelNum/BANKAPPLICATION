@@ -61,14 +61,15 @@ fun MapViewContainer(
     ) {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             location?.let {
-                //onSearchOffices(location.latitude, location.longitude, 10000.0)
                 if (firstLaunch) {
-                    onSearchOffices(55.721281, 37.555647, 12.0)
-                    onSearchATM(55.721281, 37.555647, 12.0)
+                    onSearchOffices(location.latitude, location.longitude, 10000.0)
+                    //onSearchOffices(55.721281, 37.555647, 12.0)
+                  //  onSearchATM(55.721281, 37.555647, 12.0)
+                    onSearchATM(location.latitude, location.longitude,10000.0)
                     mapView.map.move(
                         CameraPosition(
-                            //Point(location.latitude, location.longitude),
-                            Point(55.721281, 37.555647),
+                            Point(location.latitude, location.longitude),
+                            //Point(55.721281, 37.555647),
                             17.0f,
                             150.0f,
                             30.0f
@@ -178,6 +179,15 @@ fun displayRoute(
         drivingRouteListener
     )
 }
+
+fun clearRoute(mapView: MapView) {
+    for (polyline in routePolylines) {
+        mapView.map.mapObjects.remove(polyline)
+    }
+    routePolylines.clear()
+}
+
+
 
 private var userLocationLayerAdded = false
 

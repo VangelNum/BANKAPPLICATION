@@ -51,8 +51,8 @@ fun BottomSheetAboutOffices(
     latitudeUser: MutableDoubleState,
     longitudeUser: MutableDoubleState
 ) {
-//     BackPressHandler(onBackPressed = onBack)
-//     val onBack = { showBottomSheet.value = false }
+    val onBack = { showBottomSheet.value = false }
+    BackPressHandler(onBackPressed = onBack)
 
     val scope = rememberCoroutineScope()
 

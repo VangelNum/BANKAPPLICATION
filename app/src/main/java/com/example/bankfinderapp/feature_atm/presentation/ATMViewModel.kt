@@ -3,6 +3,7 @@ package com.example.bankfinderapp.feature_atm.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bankfinderapp.feature_atm.data.model.ATM
+import com.example.bankfinderapp.feature_atm.data.model.FilterRequest
 import com.example.bankfinderapp.feature_atm.domain.repository.ATMRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,13 @@ class ATMViewModel @Inject constructor(
     fun fetchAtms(lat: Double, long: Double, rad: Double) {
         viewModelScope.launch {
             val result = repository.getATMs(lat, long, rad)
+            _atm.value = result
+        }
+    }
+
+    fun filterATMs(filterRequest: FilterRequest) {
+        viewModelScope.launch {
+            val result = repository.getFilterATMs(filterRequest)
             _atm.value = result
         }
     }
